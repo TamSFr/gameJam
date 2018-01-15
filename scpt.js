@@ -1,11 +1,42 @@
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'jeu', { preload: preload, create: create, update: update });
-var map;
-var layer;
-var grille = 32;
-var player1;
+
+/*---------------------------------------
+---           Les variables           ---
+-----------------------------------------
+---  map => tileset                   ---
+--- layer => bordure map              ---
+--- grille => taille grille           --- 
+--- gameEtat => Etat de la partie     ---
+--- player1 => joueur 1               ---
+--- player2 => joueur 2               ---
+--- vitesse1 => vitesse du joueur 1   ---
+--- vitesse2 => vitesse du joueur 2   ---
+--- noiCoco => Noix de coco           ---
+--- vitNoi1 => Vitesse noix J1        ---
+--- vitNoi2 => Vitesse noix J2        ---
+-----------------------------------------*/
+
+var map; 
+var layer; 
+var grille = 32; 
+
+var gameEtat; 
+/*---------------------------------------
+---             Game Etat             ---
+-----------------------------------------
+---  0 => Ecran d'accueil             ---
+---  1 => Lancement                   ---
+---  2 => Pendant la partie           ---
+---  3 => Fin de la partie            ---
+-----------------------------------------*/
+
+var player1; 
 var player2;
-var gameEtat;
 var vitesse1;
+
+var noiCoco
+var vitNoi1
+var vitNoi2
 
 function preload() {
 	game.load.tilemap('map', 'map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -14,7 +45,9 @@ function preload() {
 }
 
 function create() {
-	game.physics.startSystem(Phaser.Physics.ARCADE)
+	game.physics.startSystem(Phaser.Physics.P2JS);
+	game.physics.p2.restitution = 0.9;
+	game.physics.p2.world.defaultContactMaterial.friction = 0.3;
 	
 	//Fond
 	game.stage.backgroundColor = '#2d2d2d';
@@ -28,6 +61,11 @@ function create() {
 	//Les controle
 	cursors = game.input.keyboard.createCursorKeys();
 	space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	z_key = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+	s_key = game.input.keyboard.addKey(Phaser.Keyboard.S);
+	q_key = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+	d_key = game.input.keyboard.addKey(Phaser.Keyboard.D);
 	
 	gameEtat = 0;
 }
@@ -50,6 +88,7 @@ function crea(){
 	//Player1
 	player1 = game.add.sprite(grille*28, grille*14, 'ball');
 	game.physics.enable(player1, Phaser.Physics.ARCADE);
+	player1.body.setCircle(16);
 	vitesse1 = 200;
 	
 	//Player2
@@ -57,8 +96,17 @@ function crea(){
 	game.physics.enable(player2, Phaser.Physics.ARCADE);
 	vitesse1 = 200;
 	
-	//Metéorite1
-	noiCoco = game.add.group();
+	//Noix de Cocos
+	noiCocos = game.add.group();
+	noiCocos.enableBody = true;
+	noiCocos.createMultiple(300, 'ball', 0, false);
+	
+    	creaNoiCoco(8*grille,8*grille);
+    	creaNoiCoco(19*grille,8*grille);
+    	creaNoiCoco(8*grille,10*grille);
+    	creaNoiCoco(19*grille,10*grille);
+    	creaNoiCoco(8*grille,12*grille);
+    	creaNoiCoco(19*grille,12*grille);
 }
 
 function gameU(){	
@@ -72,6 +120,14 @@ function gameU(){
 	player2.body.velocity.x = 0;
 	player2.body.velocity.y = 0;
 	game.physics.arcade.collide(player2, layer);
+	
+	//Controle de Noix de Coco
+	game.physics.arcade.collide(noiCocos, layer);
+	
+	//Collision entre noix et joueurs
+	game.physics.arcade.overlap(player1, noiCocos, j1Perd, null, this);
+	game.physics.arcade.overlap(player2, noiCocos, j2Perd, null, this);
+	game.physics.arcade.collide(noiCocos);
 	
 	//Controle du player 1
 	if (cursors.left.isDown){ 
@@ -88,6 +144,45 @@ function gameU(){
 	if (cursors.down.isDown){ 
 		player1.body.velocity.y = vitesse1;
 	} 
+	
+	
+	//Controle du player 2
+	if (q_key.isDown){ 
+		player2.body.velocity.x = -vitesse1;
+	}
+	
+	if (d_key.isDown){ 
+		player2.body.velocity.x = vitesse1;
+	} 
+	if (z_key.isDown){ 
+		player2.body.velocity.y = -vitesse1;
+	}
+	
+	if (s_key.isDown){ 
+		player2.body.velocity.y = vitesse1;
+	} 
+}
+
+function creaNoiCoco(x, y){
+	//Creation d'une noix de Coco
+    	noiCoco = noiCocos.getFirstExists(false);
+    	noiCoco.reset(x, y);
+    	noiCoco.body.setCircle(15);
+	noiCoco.body.velocity.x = 150;
+	noiCoco.body.velocity.y = 150;
+	
+	//Gere les rebond
+	noiCoco.body.bounce.set(1);
+}
+
+function j1Perd(player1, noiCoco){
+	alert("Le joueur 2 Gagne :D");
+	javascript:window.location.reload()
+}
+
+function j2Perd(player1, noiCoco){
+	alert("Le joueur 1 Gagne :D");
+	javascript:window.location.reload()
 }
 
 
