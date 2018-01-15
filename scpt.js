@@ -89,11 +89,13 @@ function crea(){
 	player1 = game.add.sprite(grille*28, grille*14, 'ball');
 	game.physics.enable(player1, Phaser.Physics.ARCADE);
 	player1.body.setCircle(16);
+	player1.anchor.setTo(0.5, 0.5);
 	vitesse1 = 200;
 	
 	//Player2
 	player2 = game.add.sprite(grille*3, grille*14, 'ball');
 	game.physics.enable(player2, Phaser.Physics.ARCADE);
+	player2.anchor.setTo(0.5, 0.5);
 	vitesse1 = 200;
 	
 	//Noix de Cocos
@@ -165,14 +167,17 @@ function gameU(){
 
 function creaNoiCoco(x, y){
 	//Creation d'une noix de Coco
+	vitNoi1 = 150;
     	noiCoco = noiCocos.getFirstExists(false);
     	noiCoco.reset(x, y);
     	noiCoco.body.setCircle(15);
-	noiCoco.body.velocity.x = 150;
-	noiCoco.body.velocity.y = 150;
+	noiCoco.body.velocity.x = vitNoi1;
+	noiCoco.body.velocity.y = vitNoi1;
+	
 	
 	//Gere les rebond
 	noiCoco.body.bounce.set(1);
+	noiCoco.anchor.setTo(0.5, 0.5);
 }
 
 function j1Perd(player1, noiCoco){
