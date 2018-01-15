@@ -24,6 +24,7 @@ var gameEtat;
 /*---------------------------------------
 ---             Game Etat             ---
 -----------------------------------------
+--- -1 => Rien                        ---
 ---  0 => Ecran d'accueil             ---
 ---  1 => Lancement                   ---
 ---  2 => Pendant la partie           ---
@@ -41,12 +42,15 @@ var vitNoi2
 var alea;
 var text;
 
+/*Fonction qui va charger les images*/
 function preload() {
 	game.load.tilemap('map', 'map.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
 }
 
+/*--------Fonction create
+------- Elle Initialisera tout ce qui se lance quand la page est chargé*/
 function create() {
 	text = game.add.text(game.world.centerX, game.world.centerY, "< SPACE >", { font: "65px Arial", fill: "#ffffff", align: "center" });
 	text.inputEnabled = true;
@@ -78,11 +82,13 @@ function create() {
 	gameEtat = 0;
 }
 
+/*---------Fonction Update
+--------Il va géré les etat de la partie*/
 function update() {
     if(gameEtat==0){
 	if (space.isDown){ 
-		crea();
-    		gameEtat = 1;
+		pret();
+		gameEtat = -1;
         }
     }
     else{
@@ -92,11 +98,14 @@ function update() {
     }
 }
 
-function crea(){
-	text.setText("");
-	
+function pret(){
+	game.time.events.add(Phaser.Timer.SECOND, crea, this);
 	//Creation du tileSet
 	layer = map.createLayer("Calque de Tile 1");
+	
+	text.setText("Pret?");
+	text.x = 16*32;
+	text.y = 3*32;
 	
 	//Player1
 	player1 = game.add.sprite(grille*28, grille*14, 'ball');
@@ -110,17 +119,27 @@ function crea(){
 	game.physics.enable(player2, Phaser.Physics.ARCADE);
 	player2.anchor.setTo(0.5, 0.5);
 	vitesse2 = 200;
+    	
+}
+
+/*--------Fonction Crea
+-----Elle va initialiser le "game start" */
+function crea(){
+
+	gameEtat = 1;
+	text.setText("Go !");
 	
 	//Noix de Cocos
 	noiCocos = game.add.group();
 	noiCocos.enableBody = true;
-	noiCocos.createMultiple(300, 'ball', 0, false);
+	noiCocos.createMultiple(2, 'ball', 0, false);
 	
     	creaNoiCoco1(3*grille,7*grille);
     	creaNoiCoco2(18*grille,7*grille);
-    	
 }
 
+/*-----------Fonction GameU
+---------C est la boucle du jeu une fois lancé*/
 function gameU(){	
 
 	//Player1
@@ -175,7 +194,10 @@ function gameU(){
 	} 
 }
 
+/*----------Fonction Creation de noix 1
+--------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco1(x, y){
+console.log("message");
 	//Creation d'une noix de Coco
 	vitNoi1 = 150;
     	noiCoco = noiCocos.getFirstExists(false);
@@ -201,6 +223,8 @@ function creaNoiCoco1(x, y){
 	noiCoco.anchor.setTo(0.5, 0.5);
 }
 
+/*----------Fonction Creation de noix 2
+--------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco2(x, y){
 	//Creation d'une noix de Coco
 	vitNoi1 = 150;
@@ -227,6 +251,8 @@ function creaNoiCoco2(x, y){
 	noiCoco.anchor.setTo(0.5, 0.5);
 }
 
+
+/*---------Fonction perdu-------------*/
 function j1Perd(player1, noiCoco){
 	alert("Le joueur 2 Gagne :D");
 	javascript:window.location.reload()
