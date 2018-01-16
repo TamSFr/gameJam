@@ -41,8 +41,11 @@ var vitNoi2
 
 var alea;
 var text;
+var text2;
 
 var varJ;
+var varJ2;
+var tJour;
 
 /*Fonction qui va charger les images*/
 function preload() {
@@ -81,17 +84,21 @@ function create() {
 	s_key = game.input.keyboard.addKey(Phaser.Keyboard.S);
 	q_key = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	d_key = game.input.keyboard.addKey(Phaser.Keyboard.D);
-	a_key = game.input.keyboard.addKey(Phaser.Keyboard.A);
-	e_key = game.input.keyboard.addKey(Phaser.Keyboard.E);
-	c_key = game.input.keyboard.addKey(Phaser.Keyboard.C);
-	w_key = game.input.keyboard.addKey(Phaser.Keyboard.W);
-	p_key = game.input.keyboard.addKey(Phaser.Keyboard.P);
-	o_key = game.input.keyboard.addKey(Phaser.Keyboard.O);
-	i_key = game.input.keyboard.addKey(Phaser.Keyboard.I);
-	u_key = game.input.keyboard.addKey(Phaser.Keyboard.U);
+	
+	g_key = game.input.keyboard.addKey(Phaser.Keyboard.G);
+	h_key = game.input.keyboard.addKey(Phaser.Keyboard.H);
+	j_key = game.input.keyboard.addKey(Phaser.Keyboard.J);
+	k_key = game.input.keyboard.addKey(Phaser.Keyboard.K);
+	
+	un_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_1);
+	deux_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_2);
+	trois_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_3);
+	quatre_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_4);
 	
 	gameEtat = 0;
 	varJ = 1;
+	varJ2 = 1;
+	tJour = Phaser.Timer.SECOND*4;
 }
 
 /*---------Fonction Update
@@ -116,8 +123,8 @@ function pret(){
 	layer = map.createLayer("Calque de Tile 1");
 	
 	text.setText("Pret?");
-	text.x = 16*32;
-	text.y = 3*32;
+	text.x = 16*grille;
+	text.y = 3*grille;
 	
 	//Player1
 	player1 = game.add.sprite(grille*28, grille*14, 'ball');
@@ -143,7 +150,13 @@ function pret(){
 function crea(){
 
 	gameEtat = 1;
-	text.setText("Go !");
+	text.x = 7*32;
+	text.fontSize = 40;
+	text.setText("Choisis ton item !");
+	
+	text2 = game.add.text(23*grille, 3*grille, "Choisis ton item !", { font: "40px Arial", fill: "#ffffff", align: "center" });
+	text2.inputEnabled = true;
+	text2.anchor.set(0.5);
 	
 	//Noix de Cocos
 	noiCocos = game.add.group();
@@ -151,13 +164,14 @@ function crea(){
 	noiCocos.createMultiple(300, 'noi', 0, false);
 	
     	creaNoiCoco1(3*grille,7*grille);
+    	noiCoco.body.angularVelocity = 300;
     	creaNoiCoco2(18*grille,9*grille);
 }
 
 /*-----------Fonction GameU
 ---------C est la boucle du jeu une fois lancé*/
 function gameU(){	
-
+	
 	//Player1
 	player1.body.velocity.x = 0;
 	player1.body.velocity.y = 0;
@@ -209,28 +223,61 @@ function gameU(){
 		player2.body.velocity.y = vitesse2;
 	} 
 	
+	/*Selection des item*/
 	if(varJ == 1){
 		//Controle du player 2
-		if (a_key.isDown){ 
+		if (g_key.isDown){ 
 			varJ = 0;
 			creaNoiCoco2(18*grille,7*grille);
-			
+			game.time.events.add(tJour, jour1, this);
+			text.setText("Attend !");
 		}
 
-		if (e_key.isDown){ 
+		if (h_key.isDown){ 
 			vitesse2 += 100;
 			varJ = 0;
-		} 
-		if (c_key.isDown){ 
+			game.time.events.add(tJour, jour1, this);
+			text.setText("Attend !");
+		}
+		 
+		if (j_key.isDown){ 
 			noiCoco.body.velocity.y += 100;
 			varJ = 0;
+			game.time.events.add(tJour, jour1, this);
+			text.setText("Attend !");
 		}
 
-		if (w_key.isDown){ 
-			player2.body.velocity.y = vitesse2;
-			varJ = 0;
+		if (k_key.isDown){ 
 		} 
 	}
+	
+	if(varJ2 == 1){
+		//Controle du menu player 1
+		if (un_key.isDown){ 
+			varJ2 = 0;
+			creaNoiCoco1(3*grille,7*grille);
+			game.time.events.add(tJour, jour2, this);
+			text2.setText("Attend !");
+		}
+
+		if (deux_key.isDown){ 
+			vitesse1 += 100;
+			varJ2 = 0;
+			game.time.events.add(tJour, jour2, this);
+			text2.setText("Attend !");
+		}
+		 
+		if (trois_key.isDown){ 
+			noiCoco.body.velocity.y += 100;
+			varJ2 = 0;
+			game.time.events.add(tJour, jour2, this);
+			text2.setText("Attend !");
+		}
+
+		if (quatre_key.isDown){ 
+		} 
+	}
+	noiCoco.body.angularVelocity = 300;
 }
 
 
@@ -238,7 +285,6 @@ function gameU(){
 --------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco1(x, y){
 	//Creation d'une noix de Coco
-	
     	noiCoco = noiCocos.getFirstExists(false);
     	noiCoco.reset(x, y);
     	noiCoco.body.setCircle(15);
@@ -266,7 +312,6 @@ function creaNoiCoco1(x, y){
 --------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco2(x, y){
 	//Creation d'une noix de Coco
-	
     	noiCoco = noiCocos.getFirstExists(false);
     	noiCoco.reset(x, y);
     	noiCoco.body.setCircle(15);
@@ -302,6 +347,17 @@ function j2Perd(player1, noiCoco){
 	javascript:window.location.reload()
 }
 
+/*Fonction jour
+elle initialise la fonction varJ a 1 pour nous permetre de rechoisir un item*/
+function jour1(){
+	varJ = 1;
+	text.setText("Choisis ton item !");
+}
+
+function jour2(){
+	varJ2 = 1;
+	text2.setText("Choisis ton item !");
+}
 
 
 
