@@ -42,11 +42,14 @@ var vitNoi2
 var alea;
 var text;
 
+var varJ;
+
 /*Fonction qui va charger les images*/
 function preload() {
 	game.load.tilemap('map', 'map.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
+	game.load.image('noi', 'img/coconut.png');
 }
 
 /*--------Fonction create
@@ -78,8 +81,17 @@ function create() {
 	s_key = game.input.keyboard.addKey(Phaser.Keyboard.S);
 	q_key = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	d_key = game.input.keyboard.addKey(Phaser.Keyboard.D);
+	a_key = game.input.keyboard.addKey(Phaser.Keyboard.A);
+	e_key = game.input.keyboard.addKey(Phaser.Keyboard.E);
+	c_key = game.input.keyboard.addKey(Phaser.Keyboard.C);
+	w_key = game.input.keyboard.addKey(Phaser.Keyboard.W);
+	p_key = game.input.keyboard.addKey(Phaser.Keyboard.P);
+	o_key = game.input.keyboard.addKey(Phaser.Keyboard.O);
+	i_key = game.input.keyboard.addKey(Phaser.Keyboard.I);
+	u_key = game.input.keyboard.addKey(Phaser.Keyboard.U);
 	
 	gameEtat = 0;
+	varJ = 1;
 }
 
 /*---------Fonction Update
@@ -119,6 +131,10 @@ function pret(){
 	game.physics.enable(player2, Phaser.Physics.ARCADE);
 	player2.anchor.setTo(0.5, 0.5);
 	vitesse2 = 200;
+	
+	vitNoi1 = 150;
+	vitNoi2 = 150;
+	
     	
 }
 
@@ -132,10 +148,10 @@ function crea(){
 	//Noix de Cocos
 	noiCocos = game.add.group();
 	noiCocos.enableBody = true;
-	noiCocos.createMultiple(2, 'ball', 0, false);
+	noiCocos.createMultiple(300, 'noi', 0, false);
 	
     	creaNoiCoco1(3*grille,7*grille);
-    	creaNoiCoco2(18*grille,7*grille);
+    	creaNoiCoco2(18*grille,9*grille);
 }
 
 /*-----------Fonction GameU
@@ -192,14 +208,37 @@ function gameU(){
 	if (s_key.isDown){ 
 		player2.body.velocity.y = vitesse2;
 	} 
+	
+	if(varJ == 1){
+		//Controle du player 2
+		if (a_key.isDown){ 
+			varJ = 0;
+			creaNoiCoco2(18*grille,7*grille);
+			
+		}
+
+		if (e_key.isDown){ 
+			vitesse2 += 100;
+			varJ = 0;
+		} 
+		if (c_key.isDown){ 
+			noiCoco.body.velocity.y += 100;
+			varJ = 0;
+		}
+
+		if (w_key.isDown){ 
+			player2.body.velocity.y = vitesse2;
+			varJ = 0;
+		} 
+	}
 }
+
 
 /*----------Fonction Creation de noix 1
 --------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco1(x, y){
-console.log("message");
 	//Creation d'une noix de Coco
-	vitNoi1 = 150;
+	
     	noiCoco = noiCocos.getFirstExists(false);
     	noiCoco.reset(x, y);
     	noiCoco.body.setCircle(15);
@@ -227,23 +266,23 @@ console.log("message");
 --------Elle va créé un noix de coco en x et en y*/
 function creaNoiCoco2(x, y){
 	//Creation d'une noix de Coco
-	vitNoi1 = 150;
+	
     	noiCoco = noiCocos.getFirstExists(false);
     	noiCoco.reset(x, y);
     	noiCoco.body.setCircle(15);
     	alea = Math.floor(Math.random()*2)
     	if(alea < 1){
-		noiCoco.body.velocity.x = vitNoi1;
+		noiCoco.body.velocity.x = vitNoi2;
 	}
 	else{
-		noiCoco.body.velocity.x = -vitNoi1;
+		noiCoco.body.velocity.x = -vitNoi2;
 	}
 	alea = Math.floor(Math.random()*2)
 	if(alea < 1){
-		noiCoco.body.velocity.y = vitNoi1;
+		noiCoco.body.velocity.y = vitNoi2;
 	}
 	else{
-		noiCoco.body.velocity.y = -vitNoi1;
+		noiCoco.body.velocity.y = -vitNoi2;
 	}
 	
 	//Gere les rebond
