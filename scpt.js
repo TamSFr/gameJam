@@ -47,6 +47,23 @@ var varJ;
 var varJ2;
 var tJour;
 
+var pad1;
+var pad2;
+const PAD_A = 0;
+const PAD_B = 1;
+const PAD_X = 2;
+const PAD_Y = 3;
+const PAD_LB = 4;
+const PAD_RB = 5;
+const PAD_LT= 6;
+const PAD_RT = 7;
+const PAD_START = 10;
+const PAD_SELECT = 11;
+const PAD_AXIS_X = 0;
+const PAD_AXIS_Y = 1;
+
+            
+            
 /*Fonction qui va charger les images*/
 function preload() {
 	game.load.tilemap('map', 'map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -98,6 +115,16 @@ function create() {
 	deux_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_2);
 	trois_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_3);
 	quatre_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_4);
+	/********************************
+	***          GamePad          ***
+	*********************************/
+
+        //demarre le systeme de gamepad
+        game.input.gamepad.start();
+
+        // recupere le gamepad via game.input.gamepad.padX, pour X dans [1-4]
+        pad1 = game.input.gamepad.pad1;
+        pad2 = game.input.gamepad.pad2;
 	
 	gameEtat = 0;
 	varJ = 1;
@@ -109,7 +136,8 @@ function create() {
 --------Il va géré les etat de la partie*/
 function update() {
     if(gameEtat==0){
-	if (space.isDown){ 
+	//if (space.isDown){ 
+	if (pad1.isDown(PAD_A)) {
 		pret();
 		gameEtat = -1;
         }
@@ -176,7 +204,10 @@ function crea(){
 /*-----------Fonction GameU
 ---------C est la boucle du jeu une fois lancé*/
 function gameU(){	
-	
+	var xAxis = pad1.axis(PAD_AXIS_X);
+	var yAxis = pad1.axis(PAD_AXIS_Y);
+	var xAxis2 = pad2.axis(PAD_AXIS_X);
+	var yAxis2 = pad2.axis(PAD_AXIS_Y);
 	//Player1
 	player1.body.velocity.x = 0;
 	player1.body.velocity.y = 0;
@@ -196,55 +227,66 @@ function gameU(){
 	game.physics.arcade.collide(noiCocos);
 	
 	//Controle du player 1
-	if (cursors.left.isDown){ 
+	//if (cursors.left.isDown){ 
+	if (xAxis < -0.1){
 		player1.body.velocity.x = -vitesse1;
 	}
 	
-	if (cursors.right.isDown){ 
+	//if (cursors.right.isDown){ 
+	if (xAxis > 0.1){
 		player1.body.velocity.x = vitesse1;
 	} 
-	if (cursors.up.isDown){ 
+	
+	//if (cursors.up.isDown){ 
+	if (yAxis < -0.1){
 		player1.body.velocity.y = -vitesse1;
 	}
 	
-	if (cursors.down.isDown){ 
+	//if (cursors.down.isDown){ 
+	if (yAxis > 0.1){
 		player1.body.velocity.y = vitesse1;
 	} 
 	
 	
 	//Controle du player 2
-	if (q_key.isDown){ 
+	//if (q_key.isDown){ 
+	if (xAxis2 < -0.1){
 		player2.body.velocity.x = -vitesse2;
 	}
 	
-	if (d_key.isDown){ 
+	if (xAxis2 > 0.1){ 
 		player2.body.velocity.x = vitesse2;
 	} 
-	if (z_key.isDown){ 
+	if (yAxis2 < -0.1){ 
 		player2.body.velocity.y = -vitesse2;
 	}
 	
-	if (s_key.isDown){ 
+	if (yAxis2 > 0.1){ 
 		player2.body.velocity.y = vitesse2;
 	} 
 	
 	/*Selection des item*/
 	if(varJ == 1){
 		//Controle du player 2
-		if (g_key.isDown){ 
+		//if (g_key.isDown){ 
+		if (pad2.isDown(PAD_A)) {
 			varJ = 0;
 			creaNoiCoco2(18*grille,7*grille);
 			game.time.events.add(tJour, jour1, this);
 			text.setText("Attend !");
 		}
 
-		/*if (h_key.isDown){ 
-			vitesse2 += 100;
-			varJ = 0;
-			game.time.events.add(tJour, jour1, this);
-			text.setText("Attend !");
+		if (pad2.isDown(PAD_B)){ 
+			if(vitesse2 < 600){
+				console.log("+1");
+				vitesse2 += 100;
+				varJ = 0;
+				game.time.events.add(tJour, jour1, this);
+				text.setText("Attend !");
+			}
 		}
-		 
+		
+		/*
 		if (j_key.isDown){ 
 			noiCoco.body.velocity.y += 100;
 			varJ = 0;
@@ -258,20 +300,23 @@ function gameU(){
 	
 	if(varJ2 == 1){
 		//Controle du menu player 1
-		if (un_key.isDown){ 
+		//if (un_key.isDown){ 
+		if (pad1.isDown(PAD_A)) {
 			varJ2 = 0;
 			creaNoiCoco1(3*grille,7*grille);
 			game.time.events.add(tJour, jour2, this);
 			text2.setText("Attend !");
 		}
 
-		/*if (deux_key.isDown){ 
-			vitesse1 += 100;
-			varJ2 = 0;
-			game.time.events.add(tJour, jour2, this);
-			text2.setText("Attend !");
+		if (pad1.isDown(PAD_B)){ 
+			if(vitesse1 < 600){
+				vitesse1 += 100;
+				varJ2 = 0;
+				game.time.events.add(tJour, jour2, this);
+				text2.setText("Attend !");
+			}
 		}
-		 
+		/*
 		if (trois_key.isDown){ 
 			noiCoco.body.velocity.y += 100;
 			varJ2 = 0;
