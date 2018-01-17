@@ -19,6 +19,9 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'jeu', { preload: preload, cr
 var map; 
 var layer; 
 var grille = 32; 
+var fond;
+var menuF;
+var menuF2;
 
 var gameEtat; 
 /*---------------------------------------
@@ -71,6 +74,9 @@ function preload() {
 	game.load.image('ball', 'img/ball.png');
 	game.load.image('noi', 'img/coconut.png');
 	game.load.image('bagr', 'img/background.jpg');
+	game.load.image('fond', 'img/Menu.png');
+	game.load.image('menu', 'img/menuF.png');
+	game.load.image('pim', 'img/piement.png');
 }
 
 /*--------Fonction create
@@ -80,7 +86,10 @@ function create() {
 	game.stage.backgroundColor = '#0174DF';
 	//game.add.sprite(0, 0, 'bagr');
 	
-	text = game.add.text(game.world.centerX, game.world.centerY, "< SPACE >", { font: "65px Arial", fill: "#ffffff", align: "center" });
+	fond = game.add.sprite(0, 0, 'fond');
+	
+	//texte obselette
+	text = game.add.text(game.world.centerX, game.world.centerY, "", { font: "65px Arial", fill: "#ffffff", align: "center" });
 	text.inputEnabled = true;
 	text.anchor.set(0.5);
 	
@@ -137,7 +146,8 @@ function create() {
 function update() {
     if(gameEtat==0){
 	//if (space.isDown){ 
-	if (pad1.isDown(PAD_A)) {
+	if (pad1.isDown(PAD_A) || space.isDown) {
+		fond.kill();
 		pret();
 		gameEtat = -1;
         }
@@ -183,13 +193,17 @@ function pret(){
 function crea(){
 
 	gameEtat = 1;
+	/*
+	old
 	text.x = 7*32;
-	text.fontSize = 40;
-	text.setText("Choisis ton item !");
+	text.fontSize = 40;*/
+	text.setText("");
+	menuF2 = game.add.sprite(2*grille, 1.5*grille, 'menu');
 	
-	text2 = game.add.text(23*grille, 3*grille, "Choisis ton item !", { font: "40px Arial", fill: "#ffffff", align: "center" });
+	menuF = game.add.sprite(19*grille, 1.5*grille, 'menu');
+	/*text2 = game.add.text(23*grille, 3*grille, "Choisis ton item !", { font: "40px Arial", fill: "#ffffff", align: "center" });
 	text2.inputEnabled = true;
-	text2.anchor.set(0.5);
+	text2.anchor.set(0.5);*/
 	
 	//Noix de Cocos
 	noiCocos = game.add.group();
@@ -228,40 +242,40 @@ function gameU(){
 	
 	//Controle du player 1
 	//if (cursors.left.isDown){ 
-	if (xAxis < -0.1){
+	if (xAxis < -0.1 || cursors.left.isDown){
 		player1.body.velocity.x = -vitesse1;
 	}
 	
 	//if (cursors.right.isDown){ 
-	if (xAxis > 0.1){
+	if (xAxis > 0.1 || cursors.right.isDown){
 		player1.body.velocity.x = vitesse1;
 	} 
 	
 	//if (cursors.up.isDown){ 
-	if (yAxis < -0.1){
+	if (yAxis < -0.1 || cursors.up.isDown){
 		player1.body.velocity.y = -vitesse1;
 	}
 	
 	//if (cursors.down.isDown){ 
-	if (yAxis > 0.1){
+	if (yAxis > 0.1 || cursors.down.isDown){
 		player1.body.velocity.y = vitesse1;
 	} 
 	
 	
 	//Controle du player 2
 	//if (q_key.isDown){ 
-	if (xAxis2 < -0.1){
+	if (xAxis2 < -0.1 || q_key.isDown){
 		player2.body.velocity.x = -vitesse2;
 	}
 	
-	if (xAxis2 > 0.1){ 
+	if (xAxis2 > 0.1 || d_key.isDown){ 
 		player2.body.velocity.x = vitesse2;
 	} 
-	if (yAxis2 < -0.1){ 
+	if (yAxis2 < -0.1 || z_key.isDown){ 
 		player2.body.velocity.y = -vitesse2;
 	}
 	
-	if (yAxis2 > 0.1){ 
+	if (yAxis2 > 0.1 || s_key.isDown){ 
 		player2.body.velocity.y = vitesse2;
 	} 
 	
@@ -269,20 +283,20 @@ function gameU(){
 	if(varJ == 1){
 		//Controle du player 2
 		//if (g_key.isDown){ 
-		if (pad2.isDown(PAD_A)) {
+		if (pad2.isDown(PAD_A)|| g_key.isDown) {
 			varJ = 0;
 			creaNoiCoco2(18*grille,7*grille);
 			game.time.events.add(tJour, jour1, this);
-			text.setText("Attend !");
+			menuF2.loadTexture('pim');
 		}
 
-		if (pad2.isDown(PAD_B)){ 
+		if (pad2.isDown(PAD_B) || h_key.isDown){ 
 			if(vitesse2 < 600){
 				console.log("+1");
 				vitesse2 += 100;
 				varJ = 0;
 				game.time.events.add(tJour, jour1, this);
-				text.setText("Attend !");
+				menuF2.loadTexture('pim');
 			}
 		}
 		
@@ -301,19 +315,19 @@ function gameU(){
 	if(varJ2 == 1){
 		//Controle du menu player 1
 		//if (un_key.isDown){ 
-		if (pad1.isDown(PAD_A)) {
+		if (pad1.isDown(PAD_A) || un_key.isDown) {
 			varJ2 = 0;
 			creaNoiCoco1(3*grille,7*grille);
 			game.time.events.add(tJour, jour2, this);
-			text2.setText("Attend !");
+			menuF.loadTexture('pim');
 		}
 
-		if (pad1.isDown(PAD_B)){ 
+		if (pad1.isDown(PAD_B) || deux_key.isDown){ 
 			if(vitesse1 < 600){
 				vitesse1 += 100;
 				varJ2 = 0;
 				game.time.events.add(tJour, jour2, this);
-				text2.setText("Attend !");
+				menuF.loadTexture('pim');
 			}
 		}
 		/*
@@ -404,12 +418,12 @@ function j2Perd(player1, noiCoco){
 elle initialise la fonction varJ a 1 pour nous permetre de rechoisir un item*/
 function jour1(){
 	varJ = 1;
-	text.setText("Choisis ton item !");
+	menuF2.loadTexture('menu');
 }
 
 function jour2(){
 	varJ2 = 1;
-	text2.setText("Choisis ton item !");
+	menuF.loadTexture('menu');
 }
 
 
