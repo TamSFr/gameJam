@@ -53,11 +53,16 @@ function preload() {
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
 	game.load.image('noi', 'img/coconut.png');
+	game.load.image('bagr', 'img/background.jpg');
 }
 
 /*--------Fonction create
 ------- Elle Initialisera tout ce qui se lance quand la page est chargé*/
 function create() {
+	//Fond
+	game.stage.backgroundColor = '#81BEF7';
+	//game.add.sprite(0, 0, 'bagr');
+	
 	text = game.add.text(game.world.centerX, game.world.centerY, "< SPACE >", { font: "65px Arial", fill: "#ffffff", align: "center" });
 	text.inputEnabled = true;
 	text.anchor.set(0.5);
@@ -67,8 +72,7 @@ function create() {
 	game.physics.p2.restitution = 0.9;
 	game.physics.p2.world.defaultContactMaterial.friction = 0.3;
 	
-	//Fond
-	game.stage.backgroundColor = '#2d2d2d';
+
 	
 	//TileSet
 	map = this.add.tilemap('map');
@@ -129,13 +133,14 @@ function pret(){
 	//Player1
 	player1 = game.add.sprite(grille*28, grille*14, 'ball');
 	game.physics.enable(player1, Phaser.Physics.ARCADE);
-	player1.body.setCircle(16);
+	player1.body.setCircle(25);
 	player1.anchor.setTo(0.5, 0.5);
 	vitesse1 = 200;
 	
 	//Player2
 	player2 = game.add.sprite(grille*3, grille*14, 'ball');
 	game.physics.enable(player2, Phaser.Physics.ARCADE);
+	player2.body.setCircle(25);
 	player2.anchor.setTo(0.5, 0.5);
 	vitesse2 = 200;
 	
@@ -277,7 +282,10 @@ function gameU(){
 		if (quatre_key.isDown){ 
 		} 
 	}
+	
 	noiCoco.body.angularVelocity = 300;
+	player1.body.angularVelocity = -300;
+	player2.body.angularVelocity = -300;
 }
 
 
