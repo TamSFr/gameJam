@@ -60,7 +60,7 @@ function preload() {
 ------- Elle Initialisera tout ce qui se lance quand la page est chargé*/
 function create() {
 	//Fond
-	game.stage.backgroundColor = '#81BEF7';
+	game.stage.backgroundColor = '#0174DF';
 	//game.add.sprite(0, 0, 'bagr');
 	
 	text = game.add.text(game.world.centerX, game.world.centerY, "< SPACE >", { font: "65px Arial", fill: "#ffffff", align: "center" });
@@ -238,7 +238,7 @@ function gameU(){
 			text.setText("Attend !");
 		}
 
-		if (h_key.isDown){ 
+		/*if (h_key.isDown){ 
 			vitesse2 += 100;
 			varJ = 0;
 			game.time.events.add(tJour, jour1, this);
@@ -253,7 +253,7 @@ function gameU(){
 		}
 
 		if (k_key.isDown){ 
-		} 
+		} */
 	}
 	
 	if(varJ2 == 1){
@@ -265,7 +265,7 @@ function gameU(){
 			text2.setText("Attend !");
 		}
 
-		if (deux_key.isDown){ 
+		/*if (deux_key.isDown){ 
 			vitesse1 += 100;
 			varJ2 = 0;
 			game.time.events.add(tJour, jour2, this);
@@ -280,7 +280,7 @@ function gameU(){
 		}
 
 		if (quatre_key.isDown){ 
-		} 
+		} */
 	}
 	
 	noiCoco.body.angularVelocity = 300;
