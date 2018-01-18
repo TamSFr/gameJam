@@ -83,8 +83,8 @@ function preload() {
 	game.load.image('fond', 'img/MenuFinal.png');
 	game.load.image('menu', 'img/menuF.png');
 	game.load.image('pim', 'img/piement.png');
-	game.load.image('j1g', 'img/VictoireJ1.png');
-	game.load.image('j2g', 'img/VictoireJ2.png');
+	game.load.image('j1g', 'img/VictoireJ2.png');
+	game.load.image('j2g', 'img/VictoireJ1.png');
 	game.load.image('regle', 'img/Regles.png');
 	game.load.image('cred', 'img/Crédit.png');
 }
