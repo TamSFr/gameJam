@@ -38,6 +38,9 @@ var player1;
 var player2;
 var vitesse1;
 
+var vie1;
+var vie2;
+
 var noiCoco
 var vitNoi1
 var vitNoi2
@@ -77,6 +80,10 @@ function preload() {
 	game.load.image('fond', 'img/Menu.png');
 	game.load.image('menu', 'img/menuF.png');
 	game.load.image('pim', 'img/piement.png');
+	game.load.image('j1g', 'img/j1g.png');
+	game.load.image('j2g', 'img/j2g.png');
+	game.load.image('regle', 'img/regle.png');
+	game.load.image('cred', 'img/cred.png');
 }
 
 /*--------Fonction create
@@ -138,6 +145,8 @@ function create() {
 	gameEtat = 0;
 	varJ = 1;
 	varJ2 = 1;
+	vie1 = 1;
+	vie2 = 1;
 	tJour = Phaser.Timer.SECOND*4;
 }
 
@@ -151,11 +160,22 @@ function update() {
 		pret();
 		gameEtat = -1;
         }
+	if (pad1.isDown(PAD_B) || cursors.up.isDown) {
+		regle();
+        }
+        if (pad1.isDown(PAD_X) || cursors.down.isDown) {
+		cred();
+        }
     }
     else{
     	if(gameEtat==1){
         	gameU();
         }
+    }
+    if(gameEtat == 2 || gameEtat == 3 || gameEtat == 4){
+    	if (pad1.isDown(PAD_A) || space.isDown) {
+    		javascript:window.location.reload()
+    	}
     }
 }
 
@@ -200,7 +220,7 @@ function crea(){
 	text.setText("");
 	menuF2 = game.add.sprite(2*grille, 1.5*grille, 'menu');
 	
-	menuF = game.add.sprite(19*grille, 1.5*grille, 'menu');
+	menuF = game.add.sprite(20*grille, 1.5*grille, 'menu');
 	/*text2 = game.add.text(23*grille, 3*grille, "Choisis ton item !", { font: "40px Arial", fill: "#ffffff", align: "center" });
 	text2.inputEnabled = true;
 	text2.anchor.set(0.5);*/
@@ -217,7 +237,11 @@ function crea(){
 
 /*-----------Fonction GameU
 ---------C est la boucle du jeu une fois lancé*/
-function gameU(){	
+function gameU(){
+	text.x = 16*32;
+	text.fontSize = 20;
+	text.setText("vie : "+vie1+" | "+vie2+" : vie");
+	
 	var xAxis = pad1.axis(PAD_AXIS_X);
 	var yAxis = pad1.axis(PAD_AXIS_Y);
 	var xAxis2 = pad2.axis(PAD_AXIS_X);
@@ -236,8 +260,19 @@ function gameU(){
 	game.physics.arcade.collide(noiCocos, layer);
 	
 	//Collision entre noix et joueurs
-	game.physics.arcade.overlap(player1, noiCocos, j1Perd, null, this);
-	game.physics.arcade.overlap(player2, noiCocos, j2Perd, null, this);
+	if(vie2<2){
+		game.physics.arcade.overlap(player1, noiCocos, j1Perd, null, this);
+	}
+	else{
+		game.physics.arcade.overlap(player1, noiCocos, vieP2, null, this);
+	}
+	
+	if(vie1<2){
+		game.physics.arcade.overlap(player2, noiCocos, j2Perd, null, this);
+	}
+	else{
+		game.physics.arcade.overlap(player2, noiCocos, vieP1, null, this);
+	}
 	game.physics.arcade.collide(noiCocos);
 	
 	//Controle du player 1
@@ -299,17 +334,13 @@ function gameU(){
 				menuF2.loadTexture('pim');
 			}
 		}
-		
-		/*
-		if (j_key.isDown){ 
-			noiCoco.body.velocity.y += 100;
+
+		if (pad2.isDown(PAD_X) || j_key.isDown){ 
+			vie1=vie1+1;
 			varJ = 0;
 			game.time.events.add(tJour, jour1, this);
-			text.setText("Attend !");
-		}
-
-		if (k_key.isDown){ 
-		} */
+			menuF2.loadTexture('pim');
+		} 
 	}
 	
 	if(varJ2 == 1){
@@ -330,16 +361,14 @@ function gameU(){
 				menuF.loadTexture('pim');
 			}
 		}
-		/*
-		if (trois_key.isDown){ 
-			noiCoco.body.velocity.y += 100;
+
+
+		if (pad1.isDown(PAD_X) || trois_key.isDown){ 
+			vie2=vie2+1;
 			varJ2 = 0;
 			game.time.events.add(tJour, jour2, this);
-			text2.setText("Attend !");
-		}
-
-		if (quatre_key.isDown){ 
-		} */
+			menuF.loadTexture('pim');
+		} 
 	}
 	
 	noiCoco.body.angularVelocity = 300;
@@ -405,13 +434,17 @@ function creaNoiCoco2(x, y){
 
 /*---------Fonction perdu-------------*/
 function j1Perd(player1, noiCoco){
-	alert("Le joueur 2 Gagne :D");
-	javascript:window.location.reload()
+	game.add.sprite(0, 0, 'j2g');
+	player1.kill();
+	player2.kill();
+	gameEtat = 3;
 }
 
 function j2Perd(player1, noiCoco){
-	alert("Le joueur 1 Gagne :D");
-	javascript:window.location.reload()
+	game.add.sprite(0, 0, 'j1g');
+	player1.kill();
+	player2.kill();
+	gameEtat = 3;
 }
 
 /*Fonction jour
@@ -426,9 +459,35 @@ function jour2(){
 	menuF.loadTexture('menu');
 }
 
+function vieP1(player1, noiCoco){
+	vie1=vie1-1;
+	noiCoco.kill();
+	game.time.events.add(Phaser.Timer.SECOND*4, coco1M, this);
+}
 
+function vieP2(player1, noiCoco){
+	vie2=vie2-1;
+	noiCoco.kill();
+	game.time.events.add(Phaser.Timer.SECOND*4, coco2M, this);
+	//game.time.events.add(Phaser.Timer.SECOND, crea, this);
+}
 
+function coco2M(){
+	creaNoiCoco2(18*grille,7*grille);
+}
+function coco1M(){
+	creaNoiCoco1(3*grille,7*grille);
+}
 
+function regle(){
+	game.add.sprite(0, 0, 'regle');
+	gameEtat = 2;
+}
+
+function cred(){
+	game.add.sprite(0, 0, 'cred');
+	gameEtat = 4;
+}
 
 
 
