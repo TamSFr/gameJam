@@ -79,13 +79,13 @@ function preload() {
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
 	game.load.image('noi', 'img/coconut.png');
-	game.load.image('bagr', 'img/bkg.jpg');
-	game.load.image('fond', 'img/Menu.png');
+	game.load.image('bagr', 'img/fondciel.png');
+	game.load.image('fond', 'img/MenuFinal.png');
 	game.load.image('menu', 'img/menuF.png');
 	game.load.image('pim', 'img/piement.png');
 	game.load.image('j1g', 'img/j1g.png');
 	game.load.image('j2g', 'img/j2g.png');
-	game.load.image('regle', 'img/regle.png');
+	game.load.image('regle', 'img/Regles.png');
 	game.load.image('cred', 'img/cred.png');
 }
 
