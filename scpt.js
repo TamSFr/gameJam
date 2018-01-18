@@ -79,7 +79,7 @@ function preload() {
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
 	game.load.image('noi', 'img/coconut.png');
-	game.load.image('bagr', 'img/fondciel.png');
+	game.load.image('bagr', 'img/Fondciel.png');
 	game.load.image('fond', 'img/MenuFinal.png');
 	game.load.image('menu', 'img/menuF.png');
 	game.load.image('pim', 'img/piement.png');
