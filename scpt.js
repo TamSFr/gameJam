@@ -30,14 +30,16 @@ var gameEtat;
 --- -1 => Rien                        ---
 ---  0 => Ecran d'accueil             ---
 ---  1 => Lancement                   ---
----  2 => Pendant la partie           ---
+---  2 => regle                       ---
 ---  3 => Fin de la partie            ---
+---  4 => Credit du jeu               ---
 -----------------------------------------*/
 
+/*Variable de joueurs*/
 var player1; 
 var player2;
 var vitesse1;
-
+var vitesse2;
 var vie1;
 var vie2;
 
@@ -53,6 +55,7 @@ var varJ;
 var varJ2;
 var tJour;
 
+/*Les Pads*/
 var pad1;
 var pad2;
 const PAD_A = 0;
@@ -117,6 +120,8 @@ function create() {
 	cursors = game.input.keyboard.createCursorKeys();
 	space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	
+	/*controle clavier*/
 	z_key = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 	s_key = game.input.keyboard.addKey(Phaser.Keyboard.S);
 	q_key = game.input.keyboard.addKey(Phaser.Keyboard.Q);
@@ -131,6 +136,8 @@ function create() {
 	deux_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_2);
 	trois_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_3);
 	quatre_key = game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_4);
+	
+	
 	/********************************
 	***          GamePad          ***
 	*********************************/
@@ -179,6 +186,9 @@ function update() {
     }
 }
 
+/*Fonction qui initialise les deux joueurs
+elle se met en route juste avant que la partie ne commence
+elle aviche le terrain, les joueur et un texte "pret?"*/
 function pret(){
 	game.time.events.add(Phaser.Timer.SECOND, crea, this);
 	//Creation du tileSet
@@ -240,7 +250,7 @@ function crea(){
 function gameU(){
 	text.x = 16*32;
 	text.fontSize = 20;
-	text.setText("vie : "+vie1+" | "+vie2+" : vie");
+	text.setText("  Vies :\n"+vie1+" | "+vie2);
 	
 	var xAxis = pad1.axis(PAD_AXIS_X);
 	var yAxis = pad1.axis(PAD_AXIS_Y);
@@ -327,7 +337,6 @@ function gameU(){
 
 		if (pad2.isDown(PAD_B) || h_key.isDown){ 
 			if(vitesse2 < 600){
-				console.log("+1");
 				vitesse2 += 100;
 				varJ = 0;
 				game.time.events.add(tJour, jour1, this);
@@ -472,6 +481,7 @@ function vieP2(player1, noiCoco){
 	//game.time.events.add(Phaser.Timer.SECOND, crea, this);
 }
 
+/*Fonction qui ajoute une noix de coco lorsque le joueur perd une vie*/
 function coco2M(){
 	creaNoiCoco2(18*grille,7*grille);
 }
@@ -479,11 +489,13 @@ function coco1M(){
 	creaNoiCoco1(3*grille,7*grille);
 }
 
+/*Affiche les regle du jeu*/
 function regle(){
 	game.add.sprite(0, 0, 'regle');
 	gameEtat = 2;
 }
 
+/*Affiche les crédit du jeu*/
 function cred(){
 	game.add.sprite(0, 0, 'cred');
 	gameEtat = 4;
