@@ -79,7 +79,7 @@ function preload() {
 	game.load.image('tileSet', 'img/tile.png');
 	game.load.image('ball', 'img/ball.png');
 	game.load.image('noi', 'img/coconut.png');
-	game.load.image('bagr', 'img/background.jpg');
+	game.load.image('bagr', 'img/bkg.jpg');
 	game.load.image('fond', 'img/Menu.png');
 	game.load.image('menu', 'img/menuF.png');
 	game.load.image('pim', 'img/piement.png');
@@ -93,8 +93,7 @@ function preload() {
 ------- Elle Initialisera tout ce qui se lance quand la page est chargé*/
 function create() {
 	//Fond
-	game.stage.backgroundColor = '#0174DF';
-	//game.add.sprite(0, 0, 'bagr');
+	game.add.sprite(0, 0, 'bagr');
 	
 	fond = game.add.sprite(0, 0, 'fond');
 	
